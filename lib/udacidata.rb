@@ -40,6 +40,10 @@ class Udacidata
     attributes > 0 ? read.first(attributes) : read.first
   end
 
+  def self.last(attributes = 0)
+    attributes > 0 ? read.last(attributes) : read.last
+  end
+
 end
 
 # product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
