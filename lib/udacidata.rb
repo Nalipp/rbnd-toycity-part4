@@ -27,7 +27,9 @@ class Udacidata
   end
 
   def self.all
-    CSV.table(DATA_PATH).map { |product| product }
+    CSV.table(DATA_PATH).map do |data|
+      new(id: data[0], brand: data[1], name: data[2], price: data[3])
+    end
   end
 
 end
