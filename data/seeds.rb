@@ -1,8 +1,11 @@
 require 'faker'
-
-# This file contains code that populates the database with
-# fake data for testing purposes
+require 'csv'
 
 def db_seed
-  # Your code goes here!
+  @data_path = File.dirname(__FILE__) + "/../data/data.csv"
+  CSV.open(@data_path, "wb") do |csv|
+    10.times do |id|
+      csv << [id + 1, Faker::Hipster.word, Faker::Commerce.product_name, Faker::Commerce.price]
+    end
+  end
 end
