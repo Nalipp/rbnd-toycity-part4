@@ -26,10 +26,21 @@ class Udacidata
     end
   end
 
-  def self.all
+  def self.read
     CSV.table(DATA_PATH).map do |data|
       new(id: data[0], brand: data[1], name: data[2], price: data[3])
     end
   end
 
+  def self.all
+    read
+  end
+
+  def self.first(attributes = 0)
+    attributes > 0 ? read.first(attributes) : read.first
+  end
+
 end
+
+# product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
+# p Udacidata.first(2)
