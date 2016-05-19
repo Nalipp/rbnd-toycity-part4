@@ -1,5 +1,6 @@
 require_relative 'find_by'
 require_relative 'errors'
+require_relative '../data/seeds' #delete
 require 'csv'
 
 class Udacidata
@@ -45,8 +46,27 @@ class Udacidata
     attributes > 0 ? read.last(attributes) : read.last
   end
 
-  def self.find(num)
-    read.each { |item| return item if item.id == num}
+  def self.find(id)
+    read[id - 1]
+  end
+
+  def self.destroy(id)
+    product = find(id)
+    delete_from_db(id)
+    product
+  end
+
+  def self.delete_from_db(id)
+    table = CSV.table(DATA_PATH)
+    table = table.delete_if { |row| row[0] == id}
+
+    File.open(DATA_PATH, 'w') do |f|
+      f.write(table.to_csv)
+    end
+  end
+
+  def self.where(opts={})
+    read.select { |product| product.brand == opts[:brand] }
   end
 
 end
@@ -54,4 +74,9 @@ end
 product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
 product1 = Udacidata.create(brand: "Toys", name: "Orchid", price: 20.00)
 
-puts Udacidata.find(3).id
+db_seed
+product1.save
+Udacidata.find_by_brand("Toys")
+
+product2 = Udacidata.where(brand: "Toys")
+p product2
