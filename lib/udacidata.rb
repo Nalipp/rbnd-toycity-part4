@@ -6,6 +6,7 @@ class Udacidata
 
   DATA_PATH = File.dirname(__FILE__) + "/../data/data.csv"
   attr_reader :id, :brand, :name, :price
+  create_finder_methods :brand, :name
 
   def initialize(opts={})
     @id  = opts[:id]
@@ -44,7 +45,13 @@ class Udacidata
     attributes > 0 ? read.last(attributes) : read.last
   end
 
+  def self.find(num)
+    read.each { |item| return item if item.id == num}
+  end
+
 end
 
-# product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
-# p Udacidata.first(2)
+product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
+product1 = Udacidata.create(brand: "Toys", name: "Orchid", price: 20.00)
+
+puts Udacidata.find(3).id
