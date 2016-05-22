@@ -1,7 +1,5 @@
 require_relative 'find_by'
 require_relative 'errors'
-require_relative '../data/seeds' #delete
-require_relative '../data/schema' #delete
 require 'csv'
 
 class Udacidata
@@ -76,15 +74,3 @@ class Udacidata
     Udacidata.create(id: id, brand: brand, name: name, price: price)
   end
 end
-
-# product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
-# product1 = Udacidata.create(brand: "Toys", name: "Orchid", price: 20.00)
-
-# data_path = File.dirname(__FILE__) + "/../data/data.csv"
-# File.delete(data_path)
-
-db_create
-db_seed
-#
-# puts Udacidata.find(4).update(price: 100000.00, brand: "Lolerskater")
-# puts product = Udacidata.find(3).update(price: 5000.00, brand: "Hello World")
