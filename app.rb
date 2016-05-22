@@ -1,10 +1,15 @@
 require_relative 'lib/analyzable'
 require_relative 'lib/product'
 require_relative 'data/schema'
+# require_relative 'data/seeds' #delete
 
 include Analyzable
 
+# @data_path = File.dirname(__FILE__) + "/data/data.csv" #delete
+# File.delete(@data_path) #delete
+
 db_create
+# db_seed #delete
 
 puts "-------------------"
 puts "RETURN ALL PRODUCTS"
@@ -116,3 +121,16 @@ puts "----------------------------"
 puts "RETURN HASH WITH BRAND COUNTS"
 puts "----------------------------"
 print Analyzable::count_by_brand(Product.all)
+
+puts
+puts "--------------------"
+puts "RETURN AVERAGE PRICE"
+puts "--------------------"
+print Analyzable::average_price(Product.all)
+
+puts
+puts "--------------------"
+puts "PRINT SUMMARY REPORT"
+puts "--------------------"
+print Analyzable::print_report(Product.all)
+puts
