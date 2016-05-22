@@ -1,11 +1,12 @@
 require_relative 'find_by'
 require_relative 'errors'
 require_relative '../data/seeds' #delete
+require_relative '../data/schema' #delete
 require 'csv'
 
 class Udacidata
 
-  DATA_PATH = File.dirname(__FILE__) + "/../data/data.csv"
+  @@data_path = File.dirname(__FILE__) + "/../data/data.csv"
   attr_reader :id, :brand, :name, :price
   create_finder_methods :brand, :name
 
@@ -23,31 +24,27 @@ class Udacidata
   end
 
   def save
-    CSV.open(DATA_PATH, "ab") do |product|
+    CSV.open(@@data_path, "ab") do |product|
       product << [id,brand,name,price]
     end
   end
 
-  def self.read
-    CSV.table(DATA_PATH).map do |data|
+  def self.all
+    CSV.table(@@data_path).map do |data|
       new(id: data[0], brand: data[1], name: data[2], price: data[3])
     end
   end
 
-  def self.all
-    read
+  def self.first(id = nil)
+    id == nil ? all.first : all.first(id)
   end
 
-  def self.first(attributes = 0)
-    attributes > 0 ? read.first(attributes) : read.first
-  end
-
-  def self.last(attributes = 0)
-    attributes > 0 ? read.last(attributes) : read.last
+  def self.last(id = nil)
+    id == nil ? all.last : all.last(id)
   end
 
   def self.find(id)
-    read[id - 1]
+    all.each { |product| return product if product.id == id }
   end
 
   def self.destroy(id)
@@ -57,26 +54,37 @@ class Udacidata
   end
 
   def self.delete_from_db(id)
-    table = CSV.table(DATA_PATH)
+    table = CSV.table(@@data_path)
     table = table.delete_if { |row| row[0] == id}
 
-    File.open(DATA_PATH, 'w') do |f|
+    File.open(@@data_path, 'w') do |f|
       f.write(table.to_csv)
     end
   end
 
   def self.where(opts={})
-    read.select { |product| product.brand == opts[:brand] }
+    return all.select { |product| product.brand == opts[:brand] }
+    return all.select { |product| product.name == opts[:name] }
   end
 
+  def update(opts={})
+    brand = opts[:brand] || brand
+    name = opts[:name] || name
+    price = opts[:price] || price
+
+    Udacidata.destroy(id)
+    Udacidata.create(id: id, brand: brand, name: name, price: price)
+  end
 end
 
-product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
-product1 = Udacidata.create(brand: "Toys", name: "Orchid", price: 20.00)
+# product = Udacidata.new(brand: "ColtToys", name: "Orchid Plant", price: 2.00)
+# product1 = Udacidata.create(brand: "Toys", name: "Orchid", price: 20.00)
 
+# data_path = File.dirname(__FILE__) + "/../data/data.csv"
+# File.delete(data_path)
+
+db_create
 db_seed
-product1.save
-Udacidata.find_by_brand("Toys")
-
-product2 = Udacidata.where(brand: "Toys")
-p product2
+#
+# puts Udacidata.find(4).update(price: 100000.00, brand: "Lolerskater")
+# puts product = Udacidata.find(3).update(price: 5000.00, brand: "Hello World")
