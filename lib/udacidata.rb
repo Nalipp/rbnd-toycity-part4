@@ -42,8 +42,9 @@ class Udacidata
   end
 
   def self.find(id)
-    all.each { |product| raise ProductNotFoundError, " id: '#{id}' is not in the database" if all[id - 1] == nil }
-    all.each { |product| return product if product.id == id }
+    product = all.find { |product| product if product.id == id }
+    raise ProductNotFoundError, " id: '#{id}' is not in the database" if product == nil
+    product
   end
 
   def self.destroy(id)
@@ -62,22 +63,17 @@ class Udacidata
   end
 
   def self.where(opts={})
-    return all.select { |product| product.brand == opts[:brand] }
-    return all.select { |product| product.name == opts[:name] }
+    return all.select { |product| product.brand == opts[:brand] } if opts[:brand]
+    return all.select { |product| product.name == opts[:name] } if opts[:name]
   end
 
   def update(opts={})
-    # The tests pass and the code seems to do what it is suposed to using || instead
-    # of an if then method. Is there any potential problem with using || here?
-    updated_brand = opts[:brand] || self.brand
-    updated_name = opts[:name] || self.name
-    updated_price = opts[:price] || self.price
 
-    # updated_brand = opts[:brand] ? opts[:brand] : brand
-    # updated_name = opts[:name] ? opts[:name] : name
-    # updated_price = opts[:price] ? opts[:price] : price
+    updated_brand = opts[:brand] ? opts[:brand] : brand
+    updated_name = opts[:name] ? opts[:name] : name
+    updated_price = opts[:price] ? opts[:price] : price
 
-    Udacidata.destroy(id)
-    Udacidata.create(id: id, brand: updated_brand, name: updated_name, price: updated_price)
+    Product.destroy(id)
+    Product.create(id: id, brand: updated_brand, name: updated_name, price: updated_price)
   end
 end
